@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+  <head>
+    <title>PDF Classification</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-3-typeahead@4.0.2/bootstrap3-typeahead.min.js"></script>
+  </head>
+  <body>
+    <div class="container-xl mw-100">
+      <div class="row p-3">
+        <div class="col-3">
+          <h3>PDF Classification</h3>
+          <br />
+          <div class="card">
+            <div class="card-header">
+              Choose a file
+            </div>
+            <div class="card-body">
+              <form method="post">
+                <div class="row form-group">
+                  <div class="col">
+                    <input type="text" class="form-control" id="id" name="id" placeholder="File ID...">
+                  </div>
+                  <div class="col">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <br />
+          {% if pdf_text %}
+          {% if prediction %}
+          <div class="card">
+            <div class="card-header">
+              Prediction: <strong>{{ prediction }}</strong>
+            </div>
+            <div class="card-body">
+              <p>Score: {{ "{:.2f}".format(score * 100) }}%</p>
+              <form method="post" id="class_form" class="mt-3">
+                
+                <input type="hidden" name="classification" value="{{ prediction }}">
+                <input type="hidden" name="id" value="{{ id }}">
+                <input type="hidden" name="page_num" value="{{ page_num }}">
+                <input type="hidden" name="array_no" value="{{ array_no }}">
+                <input type="hidden" name="page_text" value="{{ pdf_text }}">
+                <input type="hidden" name="filename" value="{{ filename }}">
+                <input type="hidden" name="doc_end" value="{{ doc_end }}">
+
+                <button type="submit" class="btn btn-success">Confirm Prediction</button>
+              </form>
+            </div>
+          </div>
+          <br />
+          {% endif %}
+          <div class="card">
+            <div class="card-header">
+              Classify
+            </div>
+            <div class="card-body">
+              <form method="post" id="class_form" class="mt-3">
+                <div class="row form-group">
+                  <div class="col">
+                    <input type="text" class="form-control typeahead" id="autocomplete" placeholder="Enter an option" name="classification">
+                  </div>
+                  <div class="col">
+                    <input type="checkbox" class="form-check form-check-inline" id="check" name="class_all" value="classify">
+                    <label class="form-check-label" for="check">
+                      Classify All
+                    </label>
+                  </div>
+                </div>
+                
+                <input type="hidden" name="id" value="{{ id }}">
+                <input type="hidden" name="page_num" value="{{ page_num }}">
+                <input type="hidden" name="array_no" value="{{ array_no }}">
+                <input type="hidden" name="page_text" value="{{ pdf_text }}">
+                <input type="hidden" name="filename" value="{{ filename }}">
+                <input type="hidden" name="doc_end" value="{{ doc_end }}">
+
+                <button type="submit" class="btn btn-primary">Classify</button>
+              </form>
+            </div>
+          </div>
+          <br />
+          <div class="card">
+            <div class="card-header">
+              Add classification
+            </div>
+            <div class="card-body">
+              <form id="add-form" class="mt-3">
+                <div class="row form-group">
+                  <div class="col">
+                    <input type="text" class="form-control" id="new-option" placeholder="Enter a new option">
+                  </div>
+                  <div class="col">
+                    <button type="submit" class="btn btn-primary">Add Option</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-9">
+          <div>Page Number: {{ page_num }} - Total Pages: {{ total_pages }} - Prediction: {{ prediction }}</div>
+          <hr>
+          <pre>{{ pdf_text }}</pre>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    <script>
+      $(document).ready(function() {
+        $.getJSON('options.json', function(data) {
+          $('#autocomplete').typeahead({
+            source: data,
+          });
+        });
+      });
+    </script>
+    <script>
+      $('#add-form').submit(function(event) {
+        event.preventDefault();
+    
+        var newOption = $('#new-option').val();
+    
+        $.ajax({
+          type: 'POST',
+          url: '/add-option',
+          data: JSON.stringify({'newOption': newOption}),
+          contentType: 'application/json; charset=utf-8',
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              // Option was added successfully, update the autocomplete
+              $('#autocomplete').typeahead('destroy');
+              $('#autocomplete').typeahead({
+                source: response.options,
+              });
+              $('#new-option').val('');
+            } else {
+              // Option was not added
+              alert(response.error);
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

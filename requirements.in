@@ -1,0 +1,4 @@
+boto3
+python-docx
+pdfminer
+extract_msg
