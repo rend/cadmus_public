@@ -1,4 +1,5 @@
 boto3
-python-docx
-pdfminer
-extract_msg
+openai
+pinecone_client
+PyPDF2
+transformers

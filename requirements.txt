@@ -4,82 +4,97 @@
 #
 #    pip-compile /workspaces/cadmus/requirements.in
 #
-beautifulsoup4==4.11.1
-    # via extract-msg
 boto3==1.26.35
     # via -r /workspaces/cadmus/requirements.in
-botocore==1.29.35
+botocore==1.29.70
     # via
     #   boto3
     #   s3transfer
-cffi==1.15.1
-    # via cryptography
-chardet==5.1.0
-    # via extract-msg
-colorclass==2.2.2
-    # via oletools
-compressed-rtf==1.0.6
-    # via extract-msg
-cryptography==38.0.4
-    # via msoffcrypto-tool
-easygui==0.98.3
-    # via oletools
-ebcdic==1.1.1
-    # via extract-msg
-extract-msg==0.38.4
-    # via -r /workspaces/cadmus/requirements.in
-imapclient==2.3.1
-    # via extract-msg
+certifi==2022.12.7
+    # via requests
+charset-normalizer==3.0.1
+    # via requests
+dnspython==2.3.0
+    # via pinecone-client
+et-xmlfile==1.1.0
+    # via openpyxl
+filelock==3.9.0
+    # via
+    #   huggingface-hub
+    #   transformers
+huggingface-hub==0.12.0
+    # via transformers
+idna==3.4
+    # via requests
 jmespath==1.0.1
     # via
     #   boto3
     #   botocore
-lark-parser==0.12.0
-    # via rtfde
-lxml==4.9.2
-    # via python-docx
-msoffcrypto-tool==5.0.0
-    # via oletools
-olefile==0.46
+loguru==0.6.0
+    # via pinecone-client
+numpy==1.24.2
     # via
-    #   extract-msg
-    #   msoffcrypto-tool
-    #   oletools
-oletools==0.60.1
-    # via
-    #   pcodedmp
-    #   rtfde
-pcodedmp==1.2.6
-    # via oletools
-pdfminer==20191125
+    #   openai
+    #   pandas
+    #   transformers
+openai==0.25.0
     # via -r /workspaces/cadmus/requirements.in
-pycparser==2.21
-    # via cffi
-pycryptodome==3.16.0
-    # via pdfminer
-pyparsing==2.4.7
-    # via oletools
+openpyxl==3.1.1
+    # via openai
+packaging==23.0
+    # via
+    #   huggingface-hub
+    #   transformers
+pandas==1.5.3
+    # via openai
+pandas-stubs==1.5.3.230203
+    # via openai
+pinecone-client==2.0.13
+    # via -r /workspaces/cadmus/requirements.in
+pypdf2==3.0.1
+    # via -r /workspaces/cadmus/requirements.in
 python-dateutil==2.8.2
-    # via botocore
-python-docx==0.8.11
-    # via -r /workspaces/cadmus/requirements.in
-pytz-deprecation-shim==0.1.0.post0
-    # via tzlocal
-red-black-tree-mod==1.20
-    # via extract-msg
-rtfde==0.0.2
-    # via extract-msg
+    # via
+    #   botocore
+    #   pandas
+    #   pinecone-client
+pytz==2022.7.1
+    # via pandas
+pyyaml==6.0
+    # via
+    #   huggingface-hub
+    #   pinecone-client
+    #   transformers
+regex==2022.10.31
+    # via transformers
+requests==2.28.2
+    # via
+    #   huggingface-hub
+    #   openai
+    #   pinecone-client
+    #   transformers
 s3transfer==0.6.0
     # via boto3
 six==1.16.0
+    # via python-dateutil
+tokenizers==0.13.2
+    # via transformers
+tqdm==4.64.1
     # via
-    #   imapclient
-    #   python-dateutil
-soupsieve==2.3.2.post1
-    # via beautifulsoup4
-tzdata==2022.7
-    # via pytz-deprecation-shim
-tzlocal==4.2
-    # via extract-msg
-urllib3==1.26.13
-    # via botocore
+    #   huggingface-hub
+    #   openai
+    #   transformers
+transformers==4.25.1
+    # via -r /workspaces/cadmus/requirements.in
+types-pytz==2022.7.1.0
+    # via pandas-stubs
+typing-extensions==4.4.0
+    # via
+    #   huggingface-hub
+    #   openai
+    #   pinecone-client
+urllib3==1.26.14
+    # via
+    #   botocore
+    #   pinecone-client
+    #   requests

@@ -151,7 +151,7 @@ def home():
 
         # Iterate through the PDFs in the S3 bucket with the given ID prefix
         for i, obj in enumerate(objects['Contents']):
-            if obj['Key'].endswith('.pdf') and i > array_no and i > 73:
+            if obj['Key'].endswith('.pdf') and i > array_no:
 
                 if doc_end == 'True':
                     doc_end = 'False'
