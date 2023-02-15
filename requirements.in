@@ -3,3 +3,8 @@ openai
 pinecone_client
 PyPDF2
 transformers
+scikit-learn
+plotly
+matplotlib
+flask
+scipy
