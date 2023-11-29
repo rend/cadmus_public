@@ -10,8 +10,8 @@ Behind the scenes it's using OpenAI embeddings / Pinecone to create and store th
 
 The devcontainer needs a devcontainer.env with the following keys set up:
 
-AWS_ACCESS_KEY_ID
-AWS_DEFAULT_REGION
-AWS_SECRET_ACCESS_KEY
-OPENAI_API_KEY
-PINECONE_API_KEY
+- AWS_ACCESS_KEY_ID
+- AWS_DEFAULT_REGION
+- AWS_SECRET_ACCESS_KEY
+- OPENAI_API_KEY
+- PINECONE_API_KEY
