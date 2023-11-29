@@ -2,6 +2,7 @@ import json
 import re
 import string
 import io
+import os
 from flask import Flask, request, render_template, jsonify
 import openai
 from openai.embeddings_utils import get_embedding
@@ -10,7 +11,9 @@ import boto3
 import PyPDF2
 from transformers import GPT2TokenizerFast
 
-openai.api_key = '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'  # beta.openai.com/login/
+openai.api_key = os.environ["OPENAI_API_KEY"]  # beta.openai.com/login/
+
+s3_bucket = 'novex-documents'
 
 def clean_text(text):
     # If the "text" field is not empty, replace newlines and carriage returns with a single space
@@ -30,7 +33,7 @@ def clean_text(text):
 
 def load_index():
     pinecone.init(
-        api_key='3e891c00-e05a-424d-8f9d-3bce6133520a',  # app.pinecone.io
+        api_key= os.environ["PINECONE_API_KEY"],  # app.pinecone.io
         environment='us-west1-gcp'
     )
 
@@ -87,21 +90,19 @@ def convert_pdf_to_text(pdf_data):
 def home():
     # Initialize the prediction index
     index = load_index()
-    index_stats_response = index.describe_index_stats()
-    next_context_id = index_stats_response['total_vector_count']
 
     # If the user has submitted the form for the ID, search for PDFs in the S3 bucket
     if request.method == 'POST' and 'id' in request.form and 'classification' not in request.form:
         # Get the ID from the form
         id = request.form['id']
 
-        objects = s3.list_objects(Bucket='novex-documents', Prefix=id)
+        objects = s3.list_objects(Bucket=s3_bucket, Prefix=id)
 
         # Iterate through the PDFs in the S3 bucket with the given ID prefix
         for obj in objects['Contents']:
             if obj['Key'].endswith('.pdf'):
                 # Download the PDF
-                pdf_data = s3.get_object(Bucket='novex-documents', Key=obj['Key'])['Body'].read()
+                pdf_data = s3.get_object(Bucket=s3_bucket, Key=obj['Key'])['Body'].read()
                 
                 # Convert the PDF to text
                 pages = convert_pdf_to_text(pdf_data)
@@ -147,18 +148,18 @@ def home():
         filename= request.form.get('filename')
         doc_end = request.form.get('doc_end')
 
-        objects = s3.list_objects(Bucket='novex-documents', Prefix=id)
+        objects = s3.list_objects(Bucket=s3_bucket, Prefix=id)
 
         # Iterate through the PDFs in the S3 bucket with the given ID prefix
         for i, obj in enumerate(objects['Contents']):
-            if obj['Key'].endswith('.pdf') and i > array_no:
+            if obj['Key'].endswith('.pdf') and i > array_no and i > 25:
 
                 if doc_end == 'True':
                     doc_end = 'False'
                     page_num = 0
 
                 # Download the PDF
-                pdf_data = s3.get_object(Bucket='novex-documents', Key=obj['Key'])['Body'].read()
+                pdf_data = s3.get_object(Bucket=s3_bucket, Key=obj['Key'])['Body'].read()
 
                 # Convert the PDF to text
                 pages = convert_pdf_to_text(pdf_data)
@@ -207,6 +208,9 @@ def home():
 
                     # tokens = tokenizer.tokenize(page_text)
                     # print(len(tokens))
+
+                    index_stats_response = index.describe_index_stats()
+                    next_context_id = index_stats_response['total_vector_count']
 
                     vectors = [
                         (
